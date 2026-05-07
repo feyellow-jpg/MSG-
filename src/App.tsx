@@ -17,7 +17,8 @@ import {
   ChevronRight,
   Info,
   Bell,
-  Trash2
+  Trash2,
+  Settings
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -117,8 +118,9 @@ export default function App() {
   const [editValue, setEditValue] = useState('');
 
   // --- States for Dynamic Data ---
-  const [visitingRecords, setVisitingRecords] = useState<TrainingRecord[]>(INITIAL_VISITING_TRAINING);
-  const [selfRecords, setSelfRecords] = useState<TrainingRecord[]>(INITIAL_SELF_TRAINING);
+  const [visitingRecords, setVisitingRecords] = useState<TrainingRecord[]>([]);
+  const [selfRecords, setSelfRecords] = useState<TrainingRecord[]>([]);
+  const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<{name: string, date: string, size: string}[]>([
     { name: '2026_MSG_연구회_운영계획서.pdf', date: '2026-05-01', size: '1.2MB' }
   ]);
@@ -132,22 +134,49 @@ export default function App() {
   const totalSelfHours = useMemo(() => selfRecords.reduce((acc, curr) => acc + curr.hours, 0), [selfRecords]);
 
   const handleAddRecord = (type: 'visiting' | 'self') => {
-    if (!newRecord.title || !newRecord.date || !newRecord.memberName) return;
-    
-    const record: TrainingRecord = {
-      id: `${type}-${Date.now()}`,
-      ...newRecord,
-      status: 'completed'
-    };
-
-    if (type === 'visiting') {
-      setVisitingRecords([...visitingRecords, record]);
-      setShowVisitingForm(false);
-    } else {
-      setSelfRecords([...selfRecords, record]);
-      setShowSelfForm(false);
+    if (!newRecord.title || !newRecord.date || !newRecord.memberName) {
+      alert('회원명, 주제, 날짜를 모두 입력해주세요.');
+      return;
     }
+    
+    if (editingRecordId) {
+      // 수정 모드
+      const updateFn = (records: TrainingRecord[]) => 
+        records.map(r => r.id === editingRecordId ? { ...r, ...newRecord } : r);
+      
+      if (type === 'visiting') setVisitingRecords(updateFn(visitingRecords));
+      else setSelfRecords(updateFn(selfRecords));
+      
+      setEditingRecordId(null);
+    } else {
+      // 신규 등록 모드
+      const record: TrainingRecord = {
+        id: `${type}-${Date.now()}`,
+        ...newRecord,
+        status: 'completed'
+      };
+
+      if (type === 'visiting') setVisitingRecords([...visitingRecords, record]);
+      else setSelfRecords([...selfRecords, record]);
+    }
+
+    if (type === 'visiting') setShowVisitingForm(false);
+    else setShowSelfForm(false);
+    
     setNewRecord({ title: '', date: '', hours: 2, content: '', memberName: '' });
+  };
+
+  const handleEditStart = (record: TrainingRecord, type: 'visiting' | 'self') => {
+    setNewRecord({
+      title: record.title,
+      date: record.date,
+      hours: record.hours,
+      content: record.content,
+      memberName: record.memberName || ''
+    });
+    setEditingRecordId(record.id);
+    if (type === 'visiting') setShowVisitingForm(true);
+    else setShowSelfForm(true);
   };
 
   const handleDeleteRecord = (id: string, type: 'visiting' | 'self') => {
@@ -299,18 +328,20 @@ export default function App() {
                         {item.memberName || '미지정'}
                       </span>
                       <div className="w-1 h-1 rounded-full bg-[#D1CEC7]" />
-                      <span className="text-[10px] font-sans font-bold text-[#A3A099] uppercase tracking-widest">{item.date}</span>
-                      <div className="w-1 h-1 rounded-full bg-[#D1CEC7]" />
-                      <span className={`text-[9px] font-sans font-black px-2 py-0.5 border uppercase tracking-tighter ${item.status === 'completed' ? 'border-emerald-200 text-emerald-600' : 'border-orange-200 text-orange-600'}`}>
-                        {item.status === 'completed' ? '기록 확인됨' : '진행 예정'}
-                      </span>
+                      <span className="text-xs font-sans font-bold text-[#A3A099] uppercase tracking-widest">{item.date}</span>
                     </div>
                     <h4 className="text-3xl font-serif font-medium text-[#1A1A1A] group-hover:text-[#D14F33] transition-colors mb-2 leading-tight">
                       {item.title}
                     </h4>
-                    <p className="text-[#6B6862] text-base font-sans leading-relaxed max-w-2xl">
+                    <p className="text-[#6B6862] text-xl font-sans leading-relaxed max-w-2xl mb-4">
                       {item.content}
                     </p>
+                    <button 
+                      onClick={() => handleEditStart(item, 'visiting')}
+                      className="text-xs font-sans font-black uppercase tracking-widest text-[#D14F33] hover:underline"
+                    >
+                      기록 수정하기
+                    </button>
                   </div>
                   {item.id.includes('-') && (
                     <button 
@@ -326,7 +357,9 @@ export default function App() {
 
             {showVisitingForm && (
               <div className="bg-[#F5F2ED] p-10 border border-[#D1CEC7] space-y-6">
-                <h3 className="text-sm font-sans font-black uppercase tracking-widest mb-6">새 연수 기록 등록</h3>
+                <h3 className="text-sm font-sans font-black uppercase tracking-widest mb-6">
+                  {editingRecordId ? '연수 기록 수정' : '새 연수 기록 등록'}
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-sans font-black uppercase tracking-widest text-[#A3A099]">연구원 선택 (Member)</label>
@@ -368,8 +401,14 @@ export default function App() {
                   </div>
                 </div>
                 <div className="flex gap-4 justify-end pt-4">
-                  <button onClick={() => setShowVisitingForm(false)} className="px-8 py-3 text-xs font-sans font-black uppercase tracking-widest text-[#A3A099]">취소</button>
-                  <button onClick={() => handleAddRecord('visiting')} className="px-10 py-3 bg-[#1A1A1A] text-white text-xs font-sans font-black uppercase tracking-widest shadow-lg">기록 저장</button>
+                  <button onClick={() => {
+                    setShowVisitingForm(false);
+                    setEditingRecordId(null);
+                    setNewRecord({ title: '', date: '', hours: 2, content: '', memberName: '' });
+                  }} className="px-8 py-3 text-xs font-sans font-black uppercase tracking-widest text-[#A3A099]">취소</button>
+                  <button onClick={() => handleAddRecord('visiting')} className="px-10 py-3 bg-[#1A1A1A] text-white text-xs font-sans font-black uppercase tracking-widest shadow-lg">
+                    {editingRecordId ? '기록 업데이트' : '기록 저장'}
+                  </button>
                 </div>
               </div>
             )}
@@ -411,10 +450,16 @@ export default function App() {
                   <h4 className="text-3xl font-serif font-medium text-[#1A1A1A] mb-3 group-hover:text-[#D14F33] transition-colors leading-tight">
                     {item.title}
                   </h4>
-                  <p className="text-[#6B6862] text-base font-sans leading-relaxed mb-6 line-clamp-2">
+                  <p className="text-[#6B6862] text-xl font-sans leading-relaxed mb-6 line-clamp-3">
                     {item.content}
                   </p>
                   <div className="pt-6 border-t border-[#E5E2DB] flex items-center justify-between">
+                    <button 
+                      onClick={() => handleEditStart(item, 'self')}
+                      className="text-[10px] font-sans font-black text-[#1A1A1A] uppercase tracking-widest hover:underline decoration-[#D14F33]"
+                    >
+                      상세 수정
+                    </button>
                     <div className="flex items-center gap-2">
                        <Clock size={12} className="text-[#A3A099]" />
                        <span className="text-[9px] font-sans font-black text-[#A3A099] uppercase tracking-widest">{item.status === 'completed' ? '기록 완료' : '진행 중'}</span>
@@ -434,7 +479,9 @@ export default function App() {
 
             {showSelfForm && (
               <div className="bg-[#FDFCFB] p-10 border-2 border-[#1A1A1A] space-y-6">
-                <h3 className="text-sm font-sans font-black uppercase tracking-widest mb-6">새 연구 기록 등록</h3>
+                <h3 className="text-sm font-sans font-black uppercase tracking-widest mb-6">
+                  {editingRecordId ? '연구 기록 수정' : '새 연구 기록 등록'}
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-sans font-black uppercase tracking-widest text-[#A3A099]">연구원 선택 (Member)</label>
@@ -476,8 +523,14 @@ export default function App() {
                   </div>
                 </div>
                 <div className="flex gap-4 justify-end pt-4">
-                  <button onClick={() => setShowSelfForm(false)} className="px-8 py-3 text-xs font-sans font-black uppercase tracking-widest text-[#A3A099]">취소</button>
-                  <button onClick={() => handleAddRecord('self')} className="px-10 py-3 bg-[#1A1A1A] text-white text-xs font-sans font-black uppercase tracking-widest shadow-lg">저장하기</button>
+                  <button onClick={() => {
+                    setShowSelfForm(false);
+                    setEditingRecordId(null);
+                    setNewRecord({ title: '', date: '', hours: 2, content: '', memberName: '' });
+                  }} className="px-8 py-3 text-xs font-sans font-black uppercase tracking-widest text-[#A3A099]">취소</button>
+                  <button onClick={() => handleAddRecord('self')} className="px-10 py-3 bg-[#1A1A1A] text-white text-xs font-sans font-black uppercase tracking-widest shadow-lg">
+                    {editingRecordId ? '연구 업데이트' : '저장하기'}
+                  </button>
                 </div>
               </div>
             )}
