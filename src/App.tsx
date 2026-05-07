@@ -121,9 +121,7 @@ export default function App() {
   const [visitingRecords, setVisitingRecords] = useState<TrainingRecord[]>([]);
   const [selfRecords, setSelfRecords] = useState<TrainingRecord[]>([]);
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
-  const [uploadedFiles, setUploadedFiles] = useState<{name: string, date: string, size: string}[]>([
-    { name: '2026_MSG_연구회_운영계획서.pdf', date: '2026-05-01', size: '1.2MB' }
-  ]);
+  const [uploadedFiles, setUploadedFiles] = useState<{name: string, date: string, size: string}[]>([]);
   const [showVisitingForm, setShowVisitingForm] = useState(false);
   const [showSelfForm, setShowSelfForm] = useState(false);
 
@@ -271,15 +269,15 @@ export default function App() {
               <div className="lg:col-span-4 space-y-8">
                 <div className="border-2 border-[#1A1A1A] p-8 flex flex-col items-center text-center bg-white">
                   <BookOpen size={32} className="text-[#1A1A1A] mb-4" strokeWidth={1} />
-                  <h3 className="text-lg font-serif font-black mb-2 uppercase tracking-tighter">연구 자료 보관소</h3>
-                  <p className="text-xs font-sans text-[#6B6862] mb-6 leading-relaxed">공유 데이터셋, 회의록, 연구 논문을 보안 포털을 통해 확인하세요.</p>
+                  <h3 className="text-lg font-serif font-black mb-2 uppercase tracking-tighter">연구회 아카이브</h3>
+                  <p className="text-xs font-sans text-[#6B6862] mb-6 leading-relaxed">협의회 기록, 영수증 관리 및 데이터 기반 수업 자료를 공유 드라이브에서 확인하세요.</p>
                   <a 
-                    href={SHARED_DRIVE_URL} 
+                    href="https://drive.google.com/drive/folders/1IW3eDNTj-qJW8JS6Fj-fEXUsY5qk0LNs?usp=sharing" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="inline-block px-8 py-3 bg-[#1A1A1A] text-white text-[10px] font-sans font-black uppercase tracking-[0.2em] hover:bg-[#333] transition-all shadow-lg"
                   >
-                    구글 드라이브 접속
+                    아카이브 접속
                   </a>
                 </div>
 
@@ -612,14 +610,30 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                  <a href={SHARED_DRIVE_URL} target="_blank" className="p-6 border border-[#D1CEC7] bg-[#1A1A1A] text-white flex justify-between items-center group">
-                    <span className="text-xs font-sans font-black uppercase tracking-widest">구글 공유 드라이브</span>
-                    <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform" />
+                  <a 
+                    href="https://drive.google.com/drive/folders/1IW3eDNTj-qJW8JS6Fj-fEXUsY5qk0LNs?usp=sharing" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-6 border border-[#D1CEC7] bg-[#1A1A1A] text-white flex justify-between items-center group transition-all hover:bg-[#333]"
+                  >
+                    <div className="text-left">
+                      <span className="text-[10px] font-sans font-bold text-white/40 block mb-1 uppercase tracking-widest">Archive 01</span>
+                      <span className="text-xs font-sans font-black uppercase tracking-widest">협의회 및 영수증</span>
+                    </div>
+                    <ExternalLink size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </a>
-                  <div className="p-6 border border-[#D1CEC7] bg-[#FDFCFB] flex justify-between items-center">
-                    <span className="text-xs font-sans font-black uppercase tracking-widest text-[#1A1A1A]">L.E.N.S 가이드북 (준비중)</span>
-                    <Info size={16} className="text-[#D1CEC7]" />
-                  </div>
+                  <a 
+                    href="https://drive.google.com/drive/folders/1MBuc_efxwQ_XCgXWsPLHDkbXpC7w1ewG?usp=sharing" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-6 border border-[#D1CEC7] bg-[#FDFCFB] text-[#1A1A1A] flex justify-between items-center group transition-all hover:border-[#1A1A1A]"
+                  >
+                    <div className="text-left">
+                      <span className="text-[10px] font-sans font-bold text-[#A3A099] block mb-1 uppercase tracking-widest">Archive 02</span>
+                      <span className="text-xs font-sans font-black uppercase tracking-widest text-[#1A1A1A]">수업 자료 보관소</span>
+                    </div>
+                    <ExternalLink size={16} className="text-[#D1CEC7] group-hover:text-[#1A1A1A] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </a>
                 </div>
               </div>
             </div>
