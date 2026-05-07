@@ -203,6 +203,13 @@ export default function App() {
     }
   };
 
+  const handleTabChange = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -742,15 +749,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFCFB] flex font-serif text-[#1A1A1A]">
-      {/* Sidebar Overlay */}
       <AnimatePresence>
-        {!isSidebarOpen && (
+        {isSidebarOpen && (
            <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsSidebarOpen(true)}
-            className="fixed inset-0 bg-[#1A1A1A]/40 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-[#1A1A1A]/60 backdrop-blur-sm z-40 lg:hidden"
            />
         )}
       </AnimatePresence>
@@ -779,12 +785,12 @@ export default function App() {
           </div>
 
           <nav className="flex-grow space-y-2">
-            <SidebarItem label="대시보드" icon={LayoutDashboard} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-            <SidebarItem label="찾아가는 연수" icon={Users} active={activeTab === 'visiting'} onClick={() => setActiveTab('visiting')} />
-            <SidebarItem label="자체 연구 연수" icon={Clock} active={activeTab === 'self'} onClick={() => setActiveTab('self')} />
-            <SidebarItem label="AI 구독 관리" icon={Settings} active={activeTab === 'ai-subs'} onClick={() => setActiveTab('ai-subs')} />
-            <SidebarItem label="자료실" icon={FileText} active={activeTab === 'resources'} onClick={() => setActiveTab('resources')} />
-            <SidebarItem label="회원 명부" icon={Users} active={activeTab === 'members'} onClick={() => setActiveTab('members')} />
+            <SidebarItem label="대시보드" icon={LayoutDashboard} active={activeTab === 'dashboard'} onClick={() => handleTabChange('dashboard')} />
+            <SidebarItem label="찾아가는 연수" icon={Users} active={activeTab === 'visiting'} onClick={() => handleTabChange('visiting')} />
+            <SidebarItem label="자체 연구 연수" icon={Clock} active={activeTab === 'self'} onClick={() => handleTabChange('self')} />
+            <SidebarItem label="AI 구독 관리" icon={Settings} active={activeTab === 'ai-subs'} onClick={() => handleTabChange('ai-subs')} />
+            <SidebarItem label="자료실" icon={FileText} active={activeTab === 'resources'} onClick={() => handleTabChange('resources')} />
+            <SidebarItem label="회원 명부" icon={Users} active={activeTab === 'members'} onClick={() => handleTabChange('members')} />
           </nav>
 
           <footer className="mt-12 pt-8 border-t border-[#D1CEC7]">
@@ -794,9 +800,9 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow flex flex-col min-w-0 bg-[#FDFCFB]">
+      <main className="flex-grow flex flex-col min-w-0 bg-[#FDFCFB] lg:ml-0">
         {/* Header */}
-        <header className="h-16 px-8 flex items-center justify-between sticky top-0 z-30 border-b border-[#D1CEC7] bg-[#FDFCFB]/80 backdrop-blur-md">
+        <header className="h-16 px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 border-b border-[#D1CEC7] bg-[#FDFCFB]/80 backdrop-blur-md">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsSidebarOpen(true)}
@@ -829,7 +835,7 @@ export default function App() {
         </header>
 
         <div className="flex-grow overflow-y-auto">
-          <section className="p-8 sm:p-12 max-w-7xl mx-auto w-full">
+          <section className="p-4 sm:p-12 max-w-7xl mx-auto w-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
