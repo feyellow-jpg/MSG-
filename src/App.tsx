@@ -42,7 +42,9 @@ interface TrainingRecord {
 
 // --- Constants & Data ---
 const CLUB_NAME = "M.S.G (Math-Social-GenAI)";
-const SHARED_DRIVE_URL = "https://drive.google.com/drive/folders/1brw2rjM3Le451HcMzD0K33bF1hqsvdaJ";
+const SHARED_DRIVE_URL = "https://drive.google.com/drive/folders/1IW3eDNTj-qJW8JS6Fj-fEXUsY5qk0LNs?usp=sharing";
+const LESSON_ARCHIVE_URL = "https://drive.google.com/drive/folders/1MBuc_efxwQ_XCgXWsPLHDkbXpC7w1ewG?usp=sharing";
+const OPERATIONS_ARCHIVE_URL = "https://drive.google.com/drive/folders/1h5osIebmdfcv3HpCbcD_fA9DFUgWToAb?usp=sharing";
 
 const INITIAL_NOTICES: Notice[] = [
   { id: '1', title: '2026년 AI·디지털 교사 동아리 사전 설명회 안내', date: '2026-05-07', important: true },
@@ -270,15 +272,25 @@ export default function App() {
                 <div className="border-2 border-[#1A1A1A] p-8 flex flex-col items-center text-center bg-white">
                   <BookOpen size={32} className="text-[#1A1A1A] mb-4" strokeWidth={1} />
                   <h3 className="text-lg font-serif font-black mb-2 uppercase tracking-tighter">연구회 아카이브</h3>
-                  <p className="text-xs font-sans text-[#6B6862] mb-6 leading-relaxed">협의회 기록, 영수증 관리 및 데이터 기반 수업 자료를 공유 드라이브에서 확인하세요.</p>
-                  <a 
-                    href="https://drive.google.com/drive/folders/1IW3eDNTj-qJW8JS6Fj-fEXUsY5qk0LNs?usp=sharing" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-block px-8 py-3 bg-[#1A1A1A] text-white text-[10px] font-sans font-black uppercase tracking-[0.2em] hover:bg-[#333] transition-all shadow-lg"
-                  >
-                    아카이브 접속
-                  </a>
+                  <p className="text-xs font-sans text-[#6B6862] mb-6 leading-relaxed">협의회 기록, 영수증 관리 및 데이터 기반 수업 자료를 통합 아카이브에서 확인하세요.</p>
+                  <div className="flex flex-col gap-2 w-full">
+                    <a 
+                      href={SHARED_DRIVE_URL} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block px-8 py-3 bg-[#1A1A1A] text-white text-[10px] font-sans font-black uppercase tracking-[0.2em] hover:bg-[#333] transition-all shadow-lg"
+                    >
+                      협의회/영수증 접속
+                    </a>
+                    <a 
+                      href={LESSON_ARCHIVE_URL} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block px-8 py-3 border border-[#1A1A1A] text-[#1A1A1A] text-[10px] font-sans font-black uppercase tracking-[0.2em] hover:bg-[#F5F2ED] transition-all"
+                    >
+                      수업자료 아카이브
+                    </a>
+                  </div>
                 </div>
 
                 <div className="bg-[#F5F2ED] p-6 rounded-sm border border-[#D1CEC7]">
@@ -564,21 +576,24 @@ export default function App() {
               <div className="lg:col-span-1 space-y-6">
                 <div className="border-2 border-[#1A1A1A] p-8 text-center bg-white relative">
                    <FileText size={48} className="mx-auto text-[#1A1A1A] mb-4" strokeWidth={1} />
-                   <h3 className="text-xl font-serif font-black uppercase tracking-tighter mb-2">계획서 업로드</h3>
-                   <p className="text-xs font-sans text-[#A3A099] mb-6">PDF 형식의 연구 계획서 및 결과물을 이곳에 등록하세요.</p>
+                   <h3 className="text-xl font-serif font-black uppercase tracking-tighter mb-2">수업안 업로드</h3>
+                   <p className="text-xs font-sans text-[#A3A099] mb-6">PDF 형식의 연구 수업안 및 결과물을 수업자료실로 등록하세요.</p>
                    
-                   <label className="inline-block w-full px-8 py-3 bg-[#1A1A1A] text-white text-[10px] font-sans font-black uppercase tracking-[0.2em] cursor-pointer hover:bg-[#333] transition-all">
+                   <label className="inline-block w-full px-8 py-3 bg-[#1A1A1A] text-white text-[10px] font-sans font-black uppercase tracking-[0.2em] cursor-pointer hover:bg-[#333] transition-all text-center">
                      파일 선택
                      <input type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
                    </label>
                 </div>
 
                 <div className="bg-[#F5F2ED] p-6 border border-[#D1CEC7]">
-                   <h4 className="text-[10px] font-sans font-black uppercase tracking-widest text-[#1A1A1A] mb-3">주의사항</h4>
+                   <h4 className="text-[10px] font-sans font-black uppercase tracking-widest text-[#1A1A1A] mb-3">업로드 안내</h4>
+                   <p className="text-[10px] font-sans text-[#6B6862] leading-relaxed mb-4">
+                     업로드된 수업안은 자동으로 <strong>수업 자료 보관소</strong>의 '신규 수업안' 폴더로 분류됩니다.
+                   </p>
                    <ul className="text-[11px] font-sans text-[#6B6862] space-y-2 list-disc list-inside">
-                     <li>파일 용량은 최대 10MB까지 지원됩니다.</li>
-                     <li>모든 파일은 PDF 형식만 가능합니다.</li>
-                     <li>부적절한 파일은 관리자에 의해 삭제될 수 있습니다.</li>
+                     <li>파일 용량 최대 10MB</li>
+                     <li>PDF 형식 권장</li>
+                     <li>등록 후 관리자 확인 절차 진행</li>
                    </ul>
                 </div>
               </div>
@@ -609,9 +624,9 @@ export default function App() {
                    )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
                   <a 
-                    href="https://drive.google.com/drive/folders/1IW3eDNTj-qJW8JS6Fj-fEXUsY5qk0LNs?usp=sharing" 
+                    href={SHARED_DRIVE_URL} 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="p-6 border border-[#D1CEC7] bg-[#1A1A1A] text-white flex justify-between items-center group transition-all hover:bg-[#333]"
@@ -623,7 +638,7 @@ export default function App() {
                     <ExternalLink size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </a>
                   <a 
-                    href="https://drive.google.com/drive/folders/1MBuc_efxwQ_XCgXWsPLHDkbXpC7w1ewG?usp=sharing" 
+                    href={LESSON_ARCHIVE_URL} 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="p-6 border border-[#D1CEC7] bg-[#FDFCFB] text-[#1A1A1A] flex justify-between items-center group transition-all hover:border-[#1A1A1A]"
@@ -633,6 +648,18 @@ export default function App() {
                       <span className="text-xs font-sans font-black uppercase tracking-widest text-[#1A1A1A]">수업 자료 보관소</span>
                     </div>
                     <ExternalLink size={16} className="text-[#D1CEC7] group-hover:text-[#1A1A1A] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </a>
+                  <a 
+                    href={OPERATIONS_ARCHIVE_URL} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-6 border border-[#D1CEC7] bg-[#FDFCFB] text-[#1A1A1A] flex justify-between items-center group transition-all hover:border-[#D1CEC7] hover:bg-[#F5F2ED]"
+                  >
+                    <div className="text-left">
+                      <span className="text-[10px] font-sans font-bold text-[#D14F33] block mb-1 uppercase tracking-widest">Archive 03</span>
+                      <span className="text-xs font-sans font-black uppercase tracking-widest text-[#1A1A1A]">연구회 운영 자료</span>
+                    </div>
+                    <ExternalLink size={16} className="text-[#D14F33] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </a>
                 </div>
               </div>
@@ -788,7 +815,7 @@ export default function App() {
             </div>
             <div>
                <h2 className="text-4xl font-serif font-black tracking-tighter leading-none uppercase underline decoration-[#D14F33] decoration-2 underline-offset-4">M.S.G</h2>
-               <p className="text-sm font-sans font-black text-[#A3A099] uppercase tracking-[0.2em] mt-3">AI-교원-연구회</p>
+               <p className="text-sm font-sans font-black text-[#A3A099] uppercase tracking-[0.2em] mt-3">AI-동아리-연구회</p>
             </div>
             <button 
               onClick={() => setIsSidebarOpen(false)}
